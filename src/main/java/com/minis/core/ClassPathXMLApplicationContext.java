@@ -1,5 +1,6 @@
 package com.minis.core;
 
+import com.apple.eawt.ApplicationEvent;
 import com.minis.BeanDefinition;
 import com.minis.BeansException;
 import org.dom4j.Document;
@@ -12,12 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClassPathXMLApplicationContext implements BeanFactory{
+public class ClassPathXMLApplicationContext implements BeanFactory, ApplicationEventPublisher{
     BeanFactory beanFactory;
     //context负责整合容器的启动过程，读外部配置，解析Bean定义，创建BeanFactory
     public ClassPathXMLApplicationContext(String fileName){
         Resource resource = new ClassPathXMLResource(fileName);
-        BeanFactory beanFactory = new SimpleBeanFactory();
+        SimpleBeanFactory beanFactory = new SimpleBeanFactory();
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(beanFactory);
         reader.loadBeanDefinition(resource);
         this.beanFactory = beanFactory;
@@ -30,8 +31,33 @@ public class ClassPathXMLApplicationContext implements BeanFactory{
     }
 
     @Override
-    public void registerBeanDefinition(BeanDefinition beanDefinition) {
-        this.beanFactory.registerBeanDefinition(beanDefinition);
+    public void registryBean(String beanName, Object obj) {
+        this.beanFactory.registryBean(beanName, obj);
+    }
+
+    @Override
+    public Boolean containsBean(String name) {
+        return this.beanFactory.containsBean(name);
+    }
+
+    @Override
+    public boolean isSingleton(String name) {
+        return false;
+    }
+
+    @Override
+    public boolean isPrototype(String name) {
+        return false;
+    }
+
+    @Override
+    public Class<?> getType(String name) {
+        return null;
+    }
+
+    @Override
+    public void publicEvent(ApplicationEvent event) {
+
     }
 
 
